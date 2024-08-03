@@ -145,6 +145,7 @@
 
     let dropdownActive = false;
     let activeClass = '';
+    let className = '';
 
     function toggleDropdown() {
         dropdownActive = !dropdownActive;
