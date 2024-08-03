@@ -1,43 +1,40 @@
-<header class='header1'>
-    <a href="/">jasonsalvant dot com</a>
+<header class={`header1 ${activeClass}`}>
+    <a href="/" style="font-family:'Times New Roman', Times, serif">// jasonsalvant //</a>
     <nav>
         <ul>
-            <li><a href="/">/about</a></li>
-            <li><a href="/">/selected works</a></li>
-            <li><a href="/">/explore</a></li>
-            <li><a href="/">/contact</a></li>
+            <li><a href="/">about</a></li>
+            <li><a href="/">selected works</a></li>
+            <li><a href="/">explore</a></li>
+            <li><a href="/">contact</a></li>
         </ul>
     </nav>
 </header>
-<div class="info-marquee">
+<div class={`info-marquee ${activeClass}`}>
     <div class='marquee-content'>
-        <p><span id='datetime'>{currentDateTime}, New York, NY</span></p>
+        <p><span id='datetime'> New York, NY</span></p>
         <p><span id='temperature'>TEMPERATURE placeholder.</span></p>
         <p><a href="/">ooh! click me! click me!</a></p>
         <p><span>MOON BULLSHIT placeholder.</span></p>
     </div>
 </div>
-<div class='maincontainer'>
-    <div class='dropdown-container'>
-        <p>jason salvant is <span class='dropdown'>a writer.
-            <div class='dropdown-content'>
-                <p class='dropdown-item'>an editor.</p>
-                <p class='dropdown-item'>a heretic.</p>
-                <p >a screenwriter.</p>
-                <p>a musician.</p>
-                <p>a DJ.</p>
-                <p>a fag.</p>
-                <p>a cutie.</p>
-                <p>a child of god</p>
-                <p>a child of dog</p>
-                <p>a lovecraftian horror.</p>
-                <p>a patron of the arts.</p>
-                <p>an aspiring philosopher king.</p>
-                <p>a fucking uhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh.</p>
-            </div>
-        </span></p>
+<div class="maincontainer">
+    <div class="dropdown-container" class:active={dropdownActive}>
+        <span>jason salvant is</span>
+        <button class="btn" on:click={toggleDropdown}>...</button>
+        {#if dropdownActive}
+        <div class="dropdown-content">
+            <ul>
+                <li><button class="btn dropdown" on:click={() => toggleStyle('writer')}>a writer.</button></li>
+                <li><button class="btn dropdown" on:click={() => toggleStyle('editor')}>an editor.</button></li>
+                <li><button class="btn dropdown">a heretic.</button></li>
+                <li><button class="btn dropdown">a child of god.</button></li>
+                <li><button class="btn dropdown">a gemini moon.</button></li>
+                <li><button class="btn dropdown">a lover.</button></li>
+                <li><button class="btn dropdown">the queen of england.</button></li>
+            </ul>
+        </div>
+        {/if}
     </div>
-    <img src="testimage.jpg" alt="me" height="30%" width="30%">
 </div>
 
 <style lang='scss'>
@@ -81,47 +78,94 @@
     .maincontainer {
         display: flex;
         flex-flow: row;
+        font-size: 4rem;
+        padding: 0px 5px;
+        justify-content: center;
     }
 
     .dropdown-container {
         position: absolute;
-        font-size: 4em;
-        padding: 0px 5px;
     }
 
-    .dropdown {
-        position: relative;
-        display: inline-block;
-        color: aqua;
+    .btn {
+        background: white;
+        border: none;
+        text-decoration: none;
+        color: black;
+        font-family: inherit;
+        font-size: inherit;
+        text-align: left;
+        cursor: help;
+        
+    }
+
+    .btn.dropdown {
+        background: none;
+        color: white;
+        left: 0;
+        white-space: nowrap;
+        padding: 1px 0px;
+    }
+
+    .btn.dropdown:hover, .btn.dropdown:focus {
+        background: white;
+        color: black;
+        cursor: pointer;
     }
 
     .dropdown-content {
-        display: none;
-        white-space: nowrap;
-        overflow: hidden;
         position: absolute;
         z-index: 1;
+        pointer-events: auto;
     }
 
-    .dropdown:hover .dropdown-content {
+    .dropdown-content ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    .dropdown-container.active .dropdown-content {
+        pointer-events: auto;
         display: block;
+    }
+
+    /* custom styles for each class */
+    .header1.writer {
+        background-color: #f5f5f5;
+    }
+
+    .info-marquee.editor {
+        background-color: aqua;
     }
 </style>
 
-<script lang="ts">
+<script lang='ts'>
     import { onMount } from 'svelte';
 
-    let currentDateTime: string | undefined;
+    let dropdownActive = false;
+    let activeClass = '';
+
+    function toggleDropdown() {
+        dropdownActive = !dropdownActive;
+    }
+
+    function handleClickOutside(e) {
+        if (!e.target.closest(".dropdown-container")) {
+            dropdownActive = false
+        }
+    }
+
+    function toggleStyle(className) {
+        if (activeClass === className) {
+            activeClass = '';
+        } else {
+            activeClass = className;
+        }  
+    }
 
     onMount(() => {
-        function updateDateTime() {
-            const now = new Date();
-            currentDateTime = now.toLocaleString();
-        }
-
-        updateDateTime();
-        const interval = setInterval(updateDateTime, 1000);
-
-        return () => clearInterval(interval);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
     });
 </script>
